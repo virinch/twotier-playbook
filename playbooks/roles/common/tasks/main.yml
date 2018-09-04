@@ -1,0 +1,7 @@
+---
+# tasks file for common
+- name: installing updates
+  package: name=* state=latest
+
+- name: updating repo
+  package: name=epel-release state=present

@@ -1,0 +1,36 @@
+---
+# tasks file for httpd
+- name: installing httpd
+  package: name=httpd state=present
+
+- name: starting httpd
+  service: name=httpd state=started enabled=yes
+
+- name: adding http service to firewall
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+
+- name: reloading list
+  command: firewall-cmd --reload
+
+- name: installing git client
+  package: name=git state=present
+
+- name: installing php
+  package: name={{item}} state=present
+  with_items:
+     - php
+     - php-mysql
+
+- name: cloning git
+  git: repo=https://github.com/demoglot/php.git dest=/var/www/html
+
+- name: inserting line in db.properties
+  lineinfile:
+    path: /var/www/html/db.properties
+    regexp: '^(.*)= "192.168.1.10"(.*)$'
+    line: '$host = ""'
+  
+  
